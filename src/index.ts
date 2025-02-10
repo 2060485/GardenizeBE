@@ -1,10 +1,26 @@
-import { createServer, IncomingMessage, ServerResponse } from 'http';
+import express from 'express';
+import { config } from './config/config';
+import https from 'https';
+import http from 'http';
+import connectToDb from './utils/mongodb.utils';
+import app from './app';
+import fs from 'fs';
 
-const server = createServer((req: IncomingMessage, res: ServerResponse) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Hello, TypeScript with Node.js!');
-});
+const port = config.port!;
+const serverHttp = config.serverHttp!;
 
-server.listen(3000, () => {
-  console.log('Server running at http://localhost:3000/');
-});
+if(serverHttp=="true"){
+  http.createServer(app).listen(port, () => {
+    connectToDb();
+    console.log(`Serveur en écoute sur <http://localhost:${port}>`);
+  })
+}else{
+  const options = {
+    key: fs.readFileSync('key.pem'),
+    cert: fs.readFileSync('cert.pem')
+  };
+  https.createServer(options,app).listen(port, () => {
+    connectToDb();
+    console.log(`Serveur en écoute sur <https://localhost:${port}>`);
+  })
+}
