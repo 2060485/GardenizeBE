@@ -16,6 +16,23 @@ const UserSchema = new mongoose.Schema<IUser>({
         type: String,
         default: 'user'
     },
+    notifications: [
+        {
+          message: {
+            type: String,
+          },
+          date: {
+            type: Date,
+          },
+          isRead: {
+            type: Boolean,
+          },
+        },
+    ],
+    settingId: {
+        type: String,
+        required: true
+    },
 });
 
 
