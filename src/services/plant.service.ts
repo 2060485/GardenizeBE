@@ -41,4 +41,42 @@ export class PlantService {
             throw new Error("Error adding new plant");
         }
     }
+
+    public static async updatePlant(idPlant: string, updateData: Partial<IPlant>): Promise<IPlant | null> {
+        try {
+            const updatedPlant = await Plant.findByIdAndUpdate(idPlant, updateData, {
+                new: true, // Returns the updated document
+                runValidators: true // Ensures the update follows schema validation rules
+            });
+    
+            if (!updatedPlant) {
+                console.log("Plant with ID not found for update");
+                return null;
+            }
+    
+            console.log("Plant updated successfully!");
+            return updatedPlant;
+        } catch (err) {
+            console.log(err);
+            throw new Error("Error updating plant");
+        }
+    }
+    
+    public static async deletePlant(idPlant: string): Promise<IPlant | null> {
+        try {
+            const deletedPlant = await Plant.findByIdAndDelete(idPlant);
+    
+            if (!deletedPlant) {
+                console.log("Plant with ID not found for deletion");
+                return null;
+            }
+    
+            console.log("Plant deleted successfully!");
+            return deletedPlant;
+        } catch (err) {
+            console.log(err);
+            throw new Error("Error deleting plant");
+        }
+    }
+    
 }

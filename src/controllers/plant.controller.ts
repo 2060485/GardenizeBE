@@ -49,4 +49,41 @@ export class GameController {
             logger.error('POST /plants - Error adding new plant', err);
         }
     }
+
+    public static async updatePlant(req: Request, res: Response): Promise<void> {
+        try {
+            const id = req.params.id;
+            const updateData: Partial<IPlant> = req.body;
+    
+            const updatedPlant = await PlantService.updatePlant(id, updateData);
+            if (updatedPlant) {
+                res.json(updatedPlant);
+                logger.info('PUT /plants/:id - updatePlant');
+            } else {
+                res.status(404).send('Plant not found for update');
+                logger.info('PUT /plants/:id - Plant not found for update');
+            }
+        } catch (err) {
+            res.status(500).send('Error updating plant');
+            logger.error('PUT /plants/:id - Error updating plant', err);
+        }
+    }
+    
+    public static async deletePlant(req: Request, res: Response): Promise<void> {
+        try {
+            const id = req.params.id;
+            const deletedPlant = await PlantService.deletePlant(id);
+            if (deletedPlant) {
+                res.status(200).json(deletedPlant);
+                logger.info('DELETE /plants/:id - deletePlant');
+            } else {
+                res.status(404).send('Plant not found for deletion');
+                logger.info('DELETE /plants/:id - Plant not found for deletion');
+            }
+        } catch (err) {
+            res.status(500).send('Error deleting plant');
+            logger.error('DELETE /plants/:id - Error deleting plant', err);
+        }
+    }
+    
 }
