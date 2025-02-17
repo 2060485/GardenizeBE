@@ -16,7 +16,7 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction): vo
                 res.status(403).json({ message: 'Access denied or invalid token.' });
                 return;
             }
-
+            
             req.body.user = user;
             next();
         });
