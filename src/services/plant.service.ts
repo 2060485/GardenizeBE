@@ -44,10 +44,8 @@ export class PlantService {
 
     public static async updatePlant(idPlant: string, updateData: Partial<IPlant>): Promise<IPlant | null> {
         try {
-            const updatedPlant = await Plant.findByIdAndUpdate(idPlant, updateData, {
-                new: true, // Returns the updated document
-                runValidators: true // Ensures the update follows schema validation rules
-            });
+            const updatedPlant = await Plant.findByIdAndUpdate(idPlant, updateData, { new: true });
+
     
             if (!updatedPlant) {
                 console.log("Plant with ID not found for update");
