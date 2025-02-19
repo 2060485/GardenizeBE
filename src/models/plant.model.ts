@@ -19,10 +19,10 @@ const PlantSchema = new mongoose.Schema<IPlant>({
     },
     captorID: {
         type: String,
-        required: false 
+        required: false
     }
 }, { collection: 'Plant' });
 
-PlantSchema.plugin(AutoIncrement, {inc_field: '_id'});
+PlantSchema.plugin(AutoIncrement, { inc_field: '_id', id: 'plant_id_counter' });
 
 export const Plant = mongoose.model<IPlant>("Plant", PlantSchema);

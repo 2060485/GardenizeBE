@@ -50,4 +50,47 @@ export class UserController {
         const user = await UserService.findByEmail(email);
         res.status(user.http).json(user.data);
     }
+    
+    public async getUserSettings(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = req.body.user.id;
+            const settings = await UserService.getUserSettings(userId);
+    
+            if (!settings) {
+                res.status(404).json({ message: "Settings not found." });
+                return;
+            }
+    
+            res.status(200).json(settings);
+        } catch (error) {
+            console.error('Error fetching user settings:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+    
+    public async updateUserSettings(req: Request, res: Response): Promise<void> {
+        const userId = req.body.user.id; 
+        const { enableNotifications, enableAlarm } = req.body;
+    
+        if (typeof enableNotifications === 'undefined' || typeof enableAlarm === 'undefined') {
+            res.status(400).json({ message: 'Both settings (enableNotifications and enableAlarm) are required.' });
+            return;
+        }
+    
+        try {
+            const updatedUser = await UserService.updateSettings(userId, enableNotifications, enableAlarm);
+    
+            if (updatedUser) {
+                res.status(200).json({ message: 'Settings updated successfully.', data: updatedUser });
+            } else {
+                res.status(404).json({ message: 'User not found or failed to update settings.' });
+            }
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                res.status(500).json({ message: 'Internal server error.', error: error.message });
+            } else {
+                res.status(500).json({ message: 'Internal server error.', error: 'An unknown error occurred.' });
+            }
+        }
+    }    
 }

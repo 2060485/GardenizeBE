@@ -5,7 +5,6 @@ import http from 'http';
 import app from './app';
 import fs from 'fs';
 import mongoose from 'mongoose';
-e.connect(uri)
 
 const port = config.port!;
 const serverHttp = config.serverHttp!;

@@ -1,4 +1,5 @@
 export interface IUser {
+    _id: number,
     role: string;
     email: string;
     password: string;
@@ -7,5 +8,8 @@ export interface IUser {
         date: Date;
         isRead: boolean;
     }[];
-    settingId: string
+    settings: {
+        enableNotifications: boolean;
+        enableAlarm: boolean;
+    };
 }

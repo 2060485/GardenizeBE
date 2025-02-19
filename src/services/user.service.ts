@@ -111,4 +111,52 @@ export class UserService {
 
         return { data: message, http: code };
     }
+
+    public static async getUserSettings(userId: number) {
+        try {
+            const user = await User.findById(userId);
+
+            if (!user) {
+                logger.info("User not found");
+                return null; 
+            }
+
+            return user.settings;
+        } catch (error) {
+            logger.error("Error fetching user settings: " + error);
+            throw new Error("Failed to fetch user settings");
+        }
+    }
+
+    public static async updateSettings(userId: number, enableNotifications: boolean, enableAlarm: boolean) {
+        try {
+            if (!userId) {
+                logger.error("User ID is missing");
+                throw new Error("User ID is missing");
+            }
+    
+            const user = await User.findById(userId);
+    
+            if (!user) {
+                logger.warn(`User with ID ${userId} not found`);
+                return null;
+            }
+    
+            user.settings.enableNotifications = enableNotifications;
+            user.settings.enableAlarm = enableAlarm;
+    
+            const updatedUser = await user.save();
+    
+            logger.info(`User settings updated for user ${userId}`);
+            return updatedUser;
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                logger.error(`Error updating settings for user ${userId}: ${error.message}`);
+                throw new Error(error.message);
+            } else {
+                logger.error('Unknown error occurred while updating settings.');
+                throw new Error('An unknown error occurred.');
+            }
+        }
+    }
 }
