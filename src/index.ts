@@ -5,6 +5,7 @@ import http from 'http';
 import app from './app';
 import fs from 'fs';
 import mongoose from 'mongoose';
+e.connect(uri)
 
 const port = config.port!;
 const serverHttp = config.serverHttp!;
@@ -26,6 +27,7 @@ if(serverHttp=="true"){
     cert: fs.readFileSync('./cert/cert.pem')
   };
   https.createServer(options,app).listen(port, () => {
+
     try{
       mongoose.connect(uri)
       console.log('Connexion à MongoDB réussie');

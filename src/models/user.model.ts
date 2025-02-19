@@ -31,7 +31,6 @@ const UserSchema = new mongoose.Schema<IUser>({
     ],
     settingId: {
         type: String,
-        required: true
     },
 });
 

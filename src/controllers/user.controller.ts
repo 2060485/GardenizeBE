@@ -1,0 +1,53 @@
+import { Request, Response } from 'express';
+import { UserService } from '../services/user.service';
+
+export class UserController {
+    public async getAllUsers(req: Request, res: Response): Promise<void> {
+        const users = await UserService.getAllUsers();
+        if (!users || users.length === 0) {
+            res.status(404).json({ message: "No users found." });
+        } else {
+            res.status(200).json(users);
+        }
+    }
+
+    public async createNewUser(req: Request, res: Response): Promise<void> {
+        const email = req.body.email;
+        const password = req.body.password;
+
+        if (!email || !password) {
+            res.status(400).json({ message: "Email and password are required." });
+            return;
+        }
+
+        const newUser = await UserService.createNewUser(email, password);
+        res.status(newUser.http).json(newUser.data);
+    }
+
+    public async updateUser(req: Request, res: Response): Promise<void> {
+        const { email, password } = req.body;
+        const { id } = req.params;
+
+        if (!email || !password) {
+            res.status(400).json({ message: "Email and password are required." });
+            return;
+        }
+
+        const updateUser = await UserService.modifyUser(id, email, password);
+        res.status(updateUser.http).json(updateUser.data);
+    }
+
+    public async deleteUser(req: Request, res: Response): Promise<void> {
+        const { id } = req.params;
+
+        const deletedUser = await UserService.deleteUser(id);
+        res.status(deletedUser.http).json(deletedUser.data);
+    }
+
+    public async findUserByEmail(req: Request, res: Response): Promise<void> {
+        const { email } = req.params;
+
+        const user = await UserService.findByEmail(email);
+        res.status(user.http).json(user.data);
+    }
+}
