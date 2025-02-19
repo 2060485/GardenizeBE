@@ -1,9 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 import { IPi } from "../interfaces/pi.interface";
 
-interface PiDocument extends IPi, Document {}
-
-const PiSchema = new Schema<PiDocument>({
+const PiSchema = new Schema<IPi>({
   captors: [
     {
       humidity: {
@@ -14,4 +12,4 @@ const PiSchema = new Schema<PiDocument>({
   ],
 });
 
-export const Game = mongoose.model("Game", PiSchema);
+export const Pi = mongoose.model("Pi", PiSchema);
