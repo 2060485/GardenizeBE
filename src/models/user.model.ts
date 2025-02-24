@@ -42,7 +42,27 @@ const UserSchema = new mongoose.Schema<IUser>({
       type: Boolean,
       default: false,
     }
-  }
+  },
+  raspberry_pis: [
+    {
+      raspID: {
+        type: Number,
+      },
+      authNum: {
+        type: Number,
+      },
+      captors: [
+        {
+          captorID: {
+            type: Number,
+          },
+          humidity: {
+            type: Number,
+          },
+        },
+      ],
+    },
+  ],
 }, { collection: 'User'});
 
 UserSchema.plugin(AutoIncrement, { inc_field: '_id', id: 'user_id_counter' });
