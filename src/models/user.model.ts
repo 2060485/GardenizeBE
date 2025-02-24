@@ -22,6 +22,10 @@ const UserSchema = new mongoose.Schema<IUser>({
   },
   notifications: [
     {
+      notifId: { 
+        type: Number, 
+        unique: true 
+      },
       message: {
         type: String,
       },
@@ -43,8 +47,9 @@ const UserSchema = new mongoose.Schema<IUser>({
       default: false,
     }
   }
-}, { collection: 'User'});
+}, { collection: 'User' });
 
 UserSchema.plugin(AutoIncrement, { inc_field: '_id', id: 'user_id_counter' });
+UserSchema.plugin(AutoIncrement, { inc_field: 'notifications.notifId', id: 'notification_id_counter' });
 
 export const User = mongoose.model('User', UserSchema);

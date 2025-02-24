@@ -159,4 +159,47 @@ export class UserService {
             }
         }
     }
+
+    public static async getUserNotifications(userId: number) {
+        try {
+            const user = await User.findById(userId);
+
+            if (!user) {
+                logger.info("User not found");
+                return null; 
+            }
+
+            return user.notifications;
+        } catch (error) {
+            logger.error("Error fetching user notifications: " + error);
+            throw new Error("Failed to fetch user notifications");
+        }
+    }
+
+    public static async deleteUserNotification(userId: number, notificationId: number): Promise<boolean> {
+        try {
+            const user = await User.findById(userId);
+    
+            if (!user) {
+                logger.info("User not found");
+                return false;
+            }
+
+            const notificationIndex = user.notifications.findIndex(n => n.notifId === notificationId);
+    
+            if (notificationIndex === -1) {
+                logger.info("Notification not found");
+                return false;
+            }
+    
+            user.notifications.splice(notificationIndex, 1);
+    
+            await user.save();
+            return true;
+        } catch (error) {
+            logger.error("Error deleting notification: " + error);
+            throw new Error("Failed to delete notification");
+        }
+    }
+    
 }

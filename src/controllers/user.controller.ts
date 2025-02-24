@@ -93,4 +93,37 @@ export class UserController {
             }
         }
     }    
+    
+    public async getUserNotifications(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = req.body.user.id;
+            const notifications = await UserService.getUserNotifications(userId);
+    
+            if (!notifications) {
+                res.status(404).json({ message: "Notifications not found." });
+                return;
+            }
+    
+            res.status(200).json(notifications);
+        } catch (error) {
+            console.error('Error fetching user notifications:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
+    public async deleteUserNotification(req: Request, res: Response): Promise<void> {
+        try {
+            const { userId, notificationId } = req.params;
+            const result = await UserService.deleteUserNotification(parseInt(userId), parseInt(notificationId));
+
+            if (result) {
+                res.status(200).json({ message: 'Notification deleted successfully' });
+            } else {
+                res.status(404).json({ message: 'Notification not found' });
+            }
+        } catch (error) {
+            console.error('Error deleting user notification:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
 }
