@@ -3,7 +3,7 @@ import { logger } from '../utils/logger';
 import { IPlant } from "../interfaces/plant.interface";
 import { PlantService } from "../services/plant.service";
 
-export class GameController {
+export class PlantController {
 
     public static async getPlant(req: Request, res: Response): Promise<void> {    
         try {
@@ -41,6 +41,7 @@ export class GameController {
     public static async postPlant(req: Request, res: Response): Promise<void> {
         try {
             const newPlantData: IPlant = req.body;
+            newPlantData.captorID= newPlantData.captorID.valueOf()
             const newPlant = await PlantService.postPlant(newPlantData);
             res.status(201).json(newPlant);
             logger.info('POST /plants - postPlant');
@@ -85,5 +86,23 @@ export class GameController {
             logger.error('DELETE /plants/:id - Error deleting plant', err);
         }
     }
+
+    public static async getPlantsByUser(req: Request, res: Response): Promise<void> {
+        try {
+            const userID = req.body.userID;
+            const plants = await PlantService.getPlantsByUserID(userID);
+            if (plants.length > 0) {
+                res.json(plants);
+                logger.info('GET /plants/user/:userID - getPlantsByUserID');
+            } else {
+                res.status(404).send('No plants found for this user');
+                logger.info('GET /plants/user/:userID - No plants found');
+            }
+        } catch (err) {
+            res.status(500).send('Error fetching plants by user');
+            logger.error('GET /plants/user/:userID - Error fetching plants by user', err);
+        }
+    }
+    
     
 }

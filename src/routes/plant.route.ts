@@ -1,13 +1,15 @@
 import { Router } from "express";
-import { GameController } from "../controllers/plant.controller";
+import { PlantController } from "../controllers/plant.controller";
 
 
 const plantRoutes = Router();
 
-plantRoutes.get('/:id', GameController.getPlant);
-plantRoutes.get('/', GameController.getAllPlants);
-plantRoutes.post('/', GameController.postPlant);
-plantRoutes.put('/:id', GameController.updatePlant);
-plantRoutes.delete('/:id', GameController.deletePlant);
+plantRoutes.get('/:id', PlantController.getPlant);
+plantRoutes.get('/', PlantController.getAllPlants);
+plantRoutes.get('/user/:id', PlantController.getPlantsByUser);
+plantRoutes.post('/', PlantController.postPlant);
+plantRoutes.put('/:id', PlantController.updatePlant);
+plantRoutes.delete('/:id', PlantController.deletePlant);
+
 
 export default plantRoutes;

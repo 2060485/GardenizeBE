@@ -1,6 +1,7 @@
 import { User } from '../models/user.model';
 import { logger } from '../utils/logger';
 import bcrypt from 'bcryptjs';
+import { PI } from '../models/pi.model';
 
 export class UserService {
 
@@ -158,5 +159,44 @@ export class UserService {
                 throw new Error('An unknown error occurred.');
             }
         }
+    }
+
+    public static async addPiToUser(userId: number, piId: number, authNumber: string) {
+        let code: number;
+        let message: any;
+
+        try {
+            const pi = await PI.findOne({ _id: piId, authNumber: authNumber });
+            if (!pi) {
+                code = 404;
+                message = "No matching PI found for the given ID and auth number";
+                logger.info(message);
+                return { data: message, http: code };
+            }
+            const user = await User.findById(userId);
+            if (!user) {
+                code = 404;
+                message = "User not found";
+                logger.info(message);
+                return { data: message, http: code };
+            }
+            const existingPi = user.raspberry_pis.find((pi) => pi.raspID === piId);
+            if (existingPi) {
+                code = 409;
+                message = "PI is already linked to the user";
+                logger.info(message);
+                return { data: message, http: code };
+            }
+            user.raspberry_pis.push({ raspID: piId });
+            const updatedUser = await user.save();
+            code = 200;
+            message = { mess: "PI successfully added to the user", data: updatedUser };
+            logger.info(message);
+        } catch (error) {
+            message = "Something went wrong: " + error;
+            logger.error(message);
+            code = 500;
+        }
+        return { data: message, http: code };
     }
 }

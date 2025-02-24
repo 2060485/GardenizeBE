@@ -18,7 +18,7 @@ const PlantSchema = new mongoose.Schema<IPlant>({
         trim: true
     },
     captorID: {
-        type: String,
+        type: Number,
         required: false
     }
 }, { collection: 'Plant' });

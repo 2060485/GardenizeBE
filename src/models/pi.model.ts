@@ -1,15 +1,30 @@
-import mongoose, { Schema, Document } from "mongoose";
-import { IPi } from "../interfaces/pi.interface";
+import mongoose from "mongoose";
+const AutoIncrement = require('mongoose-sequence')(mongoose);
 
-const PiSchema = new Schema<IPi>({
-  captors: [
-    {
-      humidity: {
+const PISchema = new mongoose.Schema({
+    _id: {
         type: Number,
-        required: true,
-      },
+        trim: true
     },
-  ],
-});
+    authNumber: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    captors: [
+      {
+        captorid: {
+          type: Number,
+          required: true
+        },
+        value: {
+            type: Number,
+            required: true
+        }
+      },
+    ],
+}, { collection: 'PI' });
 
-export const Pi = mongoose.model("Pi", PiSchema);
+PISchema.plugin(AutoIncrement, { inc_field: '_id', id: 'pi_counter' });
+
+export const PI = mongoose.model("PI", PISchema);

@@ -48,22 +48,10 @@ const UserSchema = new mongoose.Schema<IUser>({
       raspID: {
         type: Number,
       },
-      authNum: {
-        type: Number,
-      },
-      captors: [
-        {
-          captorID: {
-            type: Number,
-          },
-          humidity: {
-            type: Number,
-          },
-        },
-      ],
+      _id: { type: mongoose.Schema.Types.ObjectId, select: false },
     },
   ],
-}, { collection: 'User'});
+}, { collection: 'User' });
 
 UserSchema.plugin(AutoIncrement, { inc_field: '_id', id: 'user_id_counter' });
 

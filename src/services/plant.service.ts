@@ -1,5 +1,7 @@
 import { IPlant } from "../interfaces/plant.interface";
 import { Plant } from "../models/plant.model";
+import { PI } from "../models/pi.model";
+import { User } from "../models/user.model";
 
 export class PlantService {
 
@@ -76,5 +78,40 @@ export class PlantService {
             throw new Error("Error deleting plant");
         }
     }
+
+    public static async getPlantsByUserID(userID: number): Promise<IPlant[]> {
+        try {
+            const user = await User.findById(userID);
+            if (!user) {
+                console.log("User not found");
+                return [];
+            }
+            const raspIDs = user.raspberry_pis.map(rpi => rpi.raspID);
+            if (raspIDs.length === 0) {
+                console.log("No raspberry_pis found for this user");
+                return [];
+            }
+            const piList = await PI.find({ _id: { $in: raspIDs } });
+            if (piList.length === 0) {
+                console.log("No PIs found for these raspIDs");
+                return [];
+            }
+            const captorIDs = [];
+            for (const pi of piList) {       
+                for (const captor of pi.captors) {
+                    captorIDs.push(captor.captorid);
+                }
+            }
+            const plants = await Plant.find({ captorID: { $in: captorIDs } });
+            if (plants.length === 0) {
+                console.log("No plants found for the given captorIDs");
+                return [];
+            }
+            return plants;
+        } catch (err) {
+            console.log(err);
+            throw new Error("Error fetching plants by userID");
+        }
+    }    
     
 }

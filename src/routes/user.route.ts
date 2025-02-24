@@ -9,6 +9,7 @@ const userController = new UserController();
 
 router.get('/settings', verifyToken, userController.getUserSettings);
 router.put('/settings', verifyToken, userController.updateUserSettings);
+router.put('/pi', userController.addPiToUser);
 router.get('/users', verifyToken, roleMiddleware(allRole), userController.getAllUsers);
 router.post('/users', userController.createNewUser);
 router.put('/users/:id', verifyToken, roleMiddleware(adminRole), userController.updateUser);

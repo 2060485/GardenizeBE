@@ -93,4 +93,21 @@ export class UserController {
             }
         }
     }    
+
+    public async addPiToUser(req: Request, res: Response): Promise<void> {
+        const { userId, piId, authNumber } = req.body;
+
+        if (!userId || !piId || !authNumber) {
+            res.status(400).json({ message: "userId, piId, and authNumber are required." });
+            return;
+        }
+
+        try {
+            const response = await UserService.addPiToUser(userId, piId, authNumber);
+            res.status(response.http).json(response.data);
+        } catch (error) {
+            console.error('Error adding PI to user:', error);
+            res.status(500).json({ message: 'Internal server error.' });
+        }
+    }
 }

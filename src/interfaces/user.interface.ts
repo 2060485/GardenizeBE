@@ -14,10 +14,5 @@ export interface IUser {
     };
     raspberry_pis: {
         raspID: Number;
-        authNum: Number;
-        captors: {
-            captorID: Number;
-            humidity: Number;
-        }[];
     }[];
 }
