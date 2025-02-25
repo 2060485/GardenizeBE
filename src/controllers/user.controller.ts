@@ -25,18 +25,29 @@ export class UserController {
     }
 
     public async updateUser(req: Request, res: Response): Promise<void> {
-        const { email, password } = req.body;
+        const { email, role, enableNotifications, enableAlarm } = req.body;
         const { id } = req.params;
-
-        if (!email || !password) {
-            res.status(400).json({ message: "Email and password are required." });
+    
+        if (!email && role === undefined && enableNotifications === undefined && enableAlarm === undefined) {
+            res.status(400).json({ message: "At least one field (email, role, notifications, alarm) must be provided." });
             return;
         }
-
-        const updateUser = await UserService.modifyUser(id, email, password);
-        res.status(updateUser.http).json(updateUser.data);
+    
+        const updatedData: any = {};
+        
+        if (email) updatedData.email = email;
+        if (role !== undefined) updatedData.role = role;
+        if (enableNotifications !== undefined) updatedData.settings = { ...updatedData.settings, enableNotifications };
+        if (enableAlarm !== undefined) updatedData.settings = { ...updatedData.settings, enableAlarm };
+    
+        try {
+            const updatedUser = await UserService.modifyUser(id, updatedData);
+            res.status(updatedUser.http).json(updatedUser.data);
+        } catch (error) {
+            res.status(500).json({ message: "Something went wrong while updating the user." });
+        }
     }
-
+    
     public async deleteUser(req: Request, res: Response): Promise<void> {
         const { id } = req.params;
 

@@ -47,29 +47,27 @@ export class UserService {
         return { data: message, http: code };
     }
 
-    public static async modifyUser(id: string, email: string, password: string) {
+    public static async modifyUser(id: string, updatedData: any) {
         let code: number;
         let message: any;
-        let encryptedPwd = await bcrypt.hash(password, 10);
-
-        let updatedData = {
-            email: email,
-            password: encryptedPwd,
-        };
-
+    
         try {
             const res = await User.findByIdAndUpdate(id, updatedData, { new: true });
-            code = 200;
-            message = { "mess": "The user has been modified", data: res };
-            logger.info(message);
+    
+            if (!res) {
+                code = 404;
+                message = { message: "User not found." };
+            } else {
+                code = 200;
+                message = { mess: "The user has been modified", data: res };
+            }
         } catch (error) {
             message = "Something went wrong: " + error;
-            logger.error(message);
-            code = 400;
+            code = 500;
         }
-
+    
         return { data: message, http: code };
-    }
+    }    
 
     public static async deleteUser(id: string) {
         let code: number;
