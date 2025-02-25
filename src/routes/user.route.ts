@@ -8,7 +8,7 @@ const router = Router();
 const userController = new UserController();
 
 router.get('/notifications', verifyToken, userController.getUserNotifications);
-router.delete('/notifications/:notificationId', verifyToken, userController.deleteUserNotification);
+router.delete('/notifications/:notifId', verifyToken, userController.deleteUserNotification);
 router.get('/settings', verifyToken, userController.getUserSettings);
 router.put('/settings', verifyToken, userController.updateUserSettings);
 router.get('/users', verifyToken, roleMiddleware(allRole), userController.getAllUsers);

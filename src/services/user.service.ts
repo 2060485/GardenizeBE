@@ -176,26 +176,22 @@ export class UserService {
         }
     }
 
-    public static async deleteUserNotification(userId: number, notificationId: number): Promise<boolean> {
+    public static async deleteUserNotification(userId: number, notifId: number) {
         try {
             const user = await User.findById(userId);
     
             if (!user) {
                 logger.info("User not found");
-                return false;
-            }
-
-            const notificationIndex = user.notifications.findIndex(n => n.notifId === notificationId);
-    
-            if (notificationIndex === -1) {
-                logger.info("Notification not found");
-                return false;
+                return null;
             }
     
-            user.notifications.splice(notificationIndex, 1);
+            const updatedUser = await User.findByIdAndUpdate(
+                userId,
+                { $pull: { notifications: { notifId: notifId } } },
+                { new: true }
+            );
     
-            await user.save();
-            return true;
+            return updatedUser ? true : false;
         } catch (error) {
             logger.error("Error deleting notification: " + error);
             throw new Error("Failed to delete notification");

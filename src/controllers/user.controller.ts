@@ -113,17 +113,26 @@ export class UserController {
 
     public async deleteUserNotification(req: Request, res: Response): Promise<void> {
         try {
-            const { userId, notificationId } = req.params;
-            const result = await UserService.deleteUserNotification(parseInt(userId), parseInt(notificationId));
-
-            if (result) {
-                res.status(200).json({ message: 'Notification deleted successfully' });
-            } else {
-                res.status(404).json({ message: 'Notification not found' });
+            const userId = req.body.user.id;
+            const notifId = parseInt(req.params.notifId, 10);
+    
+            if (isNaN(notifId)) {
+                res.status(400).json({ message: "Invalid notification ID." });
+                return;
             }
+    
+            const success = await UserService.deleteUserNotification(userId, notifId);
+    
+            if (!success) {
+                res.status(404).json({ message: "Notification not found." });
+                return;
+            }
+    
+            res.status(200).json({ message: "Notification deleted successfully." });
         } catch (error) {
-            console.error('Error deleting user notification:', error);
-            res.status(500).json({ message: 'Internal server error' });
+            console.error("Error deleting notification:", error);
+            res.status(500).json({ message: "Internal server error" });
         }
     }
+    
 }
