@@ -1,6 +1,9 @@
 export interface IPi {
-    captors: {
-      humidity: number;
-    }[];
-  }
+  _id: number,
+  authNumber: String,
+  captors: {
+    captorid: number,
+    humidity: number;
+  }[];
+}
   

@@ -104,6 +104,54 @@ export class UserController {
             }
         }
     }    
+
+    public async addPiToUser(req: Request, res: Response): Promise<void> {
+        const {  piId, authNumber } = req.body;
+        const userId = req.body.user.id;
+
+        if (!userId || !piId || !authNumber) {
+            res.status(400).json({ message: "userId, piId, and authNumber are required." });
+            return;
+        }
+
+        try {
+            const response = await UserService.addPiToUser(userId, piId, authNumber);
+            res.status(response.http).json(response.data);
+        } catch (error) {
+            console.error('Error adding PI to user:', error);
+            res.status(500).json({ message: 'Internal server error.' });
+        }
+    }
+
+    public async getUserPis(req: Request, res: Response): Promise<void> {
+        const userId = req.body.user.id;
+    
+        try {
+            const response = await UserService.getPi(userId);
+            res.status(response.http).json(response.data);
+        } catch (error) {
+            console.error("Error fetching user's Raspberry Pis:", error);
+            res.status(500).json({ message: "Internal server error." });
+        }
+    }
+
+    public async removePiFromUser(req: Request, res: Response): Promise<void> {
+        const { piId } = req.body;
+        const userId = req.body.user.id;
+    
+        if (!userId || !piId) {
+            res.status(400).json({ message: "userId and piId are required." });
+            return;
+        }
+    
+        try {
+            const response = await UserService.removePiFromUser(userId, piId);
+            res.status(response.http).json(response.data);
+        } catch (error) {
+            console.error('Error removing PI from user:', error);
+            res.status(500).json({ message: 'Internal server error.' });
+        }
+    }
     
     public async getUserNotifications(req: Request, res: Response): Promise<void> {
         try {
@@ -145,5 +193,4 @@ export class UserController {
             res.status(500).json({ message: "Internal server error" });
         }
     }
-    
 }

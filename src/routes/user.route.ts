@@ -7,6 +7,10 @@ import { verifyToken } from '../middlewares/auth.middleware';
 const router = Router();
 const userController = new UserController();
 
+
+router.put('/deletePi',verifyToken, userController.removePiFromUser);
+router.put('/pi',verifyToken, userController.addPiToUser);
+router.get('/pi',verifyToken, userController.getUserPis);
 router.get('/notifications', verifyToken, userController.getUserNotifications);
 router.delete('/notifications/:notifId', verifyToken, userController.deleteUserNotification);
 router.get('/settings', verifyToken, userController.getUserSettings);

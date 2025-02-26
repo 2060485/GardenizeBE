@@ -42,6 +42,15 @@ const UserSchema = new mongoose.Schema<IUser>({
       type: Boolean,
       default: false,
     }
+  },
+  raspberry_pis: [
+    {
+      raspID: {
+        type: Number,
+      },
+      _id: { type: mongoose.Schema.Types.ObjectId, select: false },
+    },
+  ],
   }
 }, { collection: 'User' });
 

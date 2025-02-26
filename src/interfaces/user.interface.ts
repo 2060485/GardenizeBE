@@ -13,4 +13,7 @@ export interface IUser {
         enableNotifications: boolean;
         enableAlarm: boolean;
     };
+    raspberry_pis: {
+        raspID: Number;
+    }[];
 }
