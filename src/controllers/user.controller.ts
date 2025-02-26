@@ -25,18 +25,29 @@ export class UserController {
     }
 
     public async updateUser(req: Request, res: Response): Promise<void> {
-        const { email, password } = req.body;
+        const { email, role, enableNotifications, enableAlarm } = req.body;
         const { id } = req.params;
-
-        if (!email || !password) {
-            res.status(400).json({ message: "Email and password are required." });
+    
+        if (!email && role === undefined && enableNotifications === undefined && enableAlarm === undefined) {
+            res.status(400).json({ message: "At least one field (email, role, notifications, alarm) must be provided." });
             return;
         }
-
-        const updateUser = await UserService.modifyUser(id, email, password);
-        res.status(updateUser.http).json(updateUser.data);
+    
+        const updatedData: any = {};
+        
+        if (email) updatedData.email = email;
+        if (role !== undefined) updatedData.role = role;
+        if (enableNotifications !== undefined) updatedData.settings = { ...updatedData.settings, enableNotifications };
+        if (enableAlarm !== undefined) updatedData.settings = { ...updatedData.settings, enableAlarm };
+    
+        try {
+            const updatedUser = await UserService.modifyUser(id, updatedData);
+            res.status(updatedUser.http).json(updatedUser.data);
+        } catch (error) {
+            res.status(500).json({ message: "Something went wrong while updating the user." });
+        }
     }
-
+    
     public async deleteUser(req: Request, res: Response): Promise<void> {
         const { id } = req.params;
 
@@ -93,4 +104,46 @@ export class UserController {
             }
         }
     }    
+    
+    public async getUserNotifications(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = req.body.user.id;
+            const notifications = await UserService.getUserNotifications(userId);
+    
+            if (!notifications) {
+                res.status(404).json({ message: "Notifications not found." });
+                return;
+            }
+    
+            res.status(200).json(notifications);
+        } catch (error) {
+            console.error('Error fetching user notifications:', error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
+    public async deleteUserNotification(req: Request, res: Response): Promise<void> {
+        try {
+            const userId = req.body.user.id;
+            const notifId = parseInt(req.params.notifId, 10);
+    
+            if (isNaN(notifId)) {
+                res.status(400).json({ message: "Invalid notification ID." });
+                return;
+            }
+    
+            const success = await UserService.deleteUserNotification(userId, notifId);
+    
+            if (!success) {
+                res.status(404).json({ message: "Notification not found." });
+                return;
+            }
+    
+            res.status(200).json({ message: "Notification deleted successfully." });
+        } catch (error) {
+            console.error("Error deleting notification:", error);
+            res.status(500).json({ message: "Internal server error" });
+        }
+    }
+    
 }

@@ -43,7 +43,7 @@ const UserSchema = new mongoose.Schema<IUser>({
       default: false,
     }
   }
-}, { collection: 'User'});
+}, { collection: 'User' });
 
 UserSchema.plugin(AutoIncrement, { inc_field: '_id', id: 'user_id_counter' });
 

@@ -4,6 +4,7 @@ export interface IUser {
     email: string;
     password: string;
     notifications: {
+        notifId:number;
         message: string;
         date: Date;
         isRead: boolean;

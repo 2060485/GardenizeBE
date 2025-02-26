@@ -47,29 +47,27 @@ export class UserService {
         return { data: message, http: code };
     }
 
-    public static async modifyUser(id: string, email: string, password: string) {
+    public static async modifyUser(id: string, updatedData: any) {
         let code: number;
         let message: any;
-        let encryptedPwd = await bcrypt.hash(password, 10);
-
-        let updatedData = {
-            email: email,
-            password: encryptedPwd,
-        };
-
+    
         try {
             const res = await User.findByIdAndUpdate(id, updatedData, { new: true });
-            code = 200;
-            message = { "mess": "The user has been modified", data: res };
-            logger.info(message);
+    
+            if (!res) {
+                code = 404;
+                message = { message: "User not found." };
+            } else {
+                code = 200;
+                message = { mess: "The user has been modified", data: res };
+            }
         } catch (error) {
             message = "Something went wrong: " + error;
-            logger.error(message);
-            code = 400;
+            code = 500;
         }
-
+    
         return { data: message, http: code };
-    }
+    }    
 
     public static async deleteUser(id: string) {
         let code: number;
@@ -159,4 +157,43 @@ export class UserService {
             }
         }
     }
+
+    public static async getUserNotifications(userId: number) {
+        try {
+            const user = await User.findById(userId);
+
+            if (!user) {
+                logger.info("User not found");
+                return null; 
+            }
+
+            return user.notifications;
+        } catch (error) {
+            logger.error("Error fetching user notifications: " + error);
+            throw new Error("Failed to fetch user notifications");
+        }
+    }
+
+    public static async deleteUserNotification(userId: number, notifId: number) {
+        try {
+            const user = await User.findById(userId);
+    
+            if (!user) {
+                logger.info("User not found");
+                return null;
+            }
+    
+            const updatedUser = await User.findByIdAndUpdate(
+                userId,
+                { $pull: { notifications: { notifId: notifId } } },
+                { new: true }
+            );
+    
+            return updatedUser ? true : false;
+        } catch (error) {
+            logger.error("Error deleting notification: " + error);
+            throw new Error("Failed to delete notification");
+        }
+    }
+    
 }
