@@ -114,4 +114,71 @@ export class PlantService {
         }
     }    
     
+    public static async getCaptorsByUserID(userID: number): Promise<any[]> {
+        try {
+            const user = await User.findById(userID);
+            if (!user) {
+                console.log("User not found");
+                return [];
+            }
+            const raspIDs = user.raspberry_pis.map(rpi => rpi.raspID);
+            if (raspIDs.length === 0) {
+                console.log("No raspberry_pis found for this user");
+                return [];
+            }
+            const piList = await PI.find({ _id: { $in: raspIDs } });
+            if (piList.length === 0) {
+                console.log("No PIs found for these raspIDs");
+                return [];
+            }
+            const captors = [];
+            for (const pi of piList) {
+                for (const captor of pi.captors) {
+                    captors.push(captor.captorid);
+                }
+            }
+            if (captors.length === 0) {
+                console.log("No captors found for the given raspberry pis");
+                return [];
+            }
+            return captors;
+        } catch (err) {
+            console.log(err);
+            throw new Error("Error fetching captors by userID");
+        }
+    }    
+
+    public static async getCaptorsInfoByUserID(userID: number): Promise<any[]> {
+        try {
+            const user = await User.findById(userID);
+            if (!user) {
+                console.log("User not found");
+                return [];
+            }
+            const raspIDs = user.raspberry_pis.map(rpi => rpi.raspID);
+            if (raspIDs.length === 0) {
+                console.log("No raspberry_pis found for this user");
+                return [];
+            }
+            const piList = await PI.find({ _id: { $in: raspIDs } });
+            if (piList.length === 0) {
+                console.log("No PIs found for these raspIDs");
+                return [];
+            }
+            const captors = [];
+            for (const pi of piList) {
+                for (const captor of pi.captors) {
+                    captors.push(captor);
+                }
+            }
+            if (captors.length === 0) {
+                console.log("No captors found for the given raspberry pis");
+                return [];
+            }
+            return captors;
+        } catch (err) {
+            console.log(err);
+            throw new Error("Error fetching captors by userID");
+        }
+    }    
 }

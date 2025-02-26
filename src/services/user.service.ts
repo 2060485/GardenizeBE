@@ -199,4 +199,67 @@ export class UserService {
         }
         return { data: message, http: code };
     }
+
+    public static async getPi(userId: number) {
+        let code: number;
+        let message: any;
+    
+        try {
+            const user = await User.findById(userId);
+            if (!user) {
+                code = 404;
+                message = "User not found";
+                logger.info(message);
+                return { data: message, http: code };
+            }
+    
+            if (!user.raspberry_pis || user.raspberry_pis.length === 0) {
+                code = 404;
+                message = "User does not have any associated Raspberry Pis";
+                logger.info(message);
+                return { data: message, http: code };
+            }
+    
+            code = 200;
+            message = { mess: "User has associated Raspberry Pis", data: user.raspberry_pis };
+            logger.info(message);
+        } catch (error) {
+            message = "Something went wrong: " + error;
+            logger.error(message);
+            code = 500;
+        }
+        return { data: message, http: code };
+    }    
+
+    public static async removePiFromUser(userId: number, piId: number) {
+        let code: number;
+        let message: any;
+    
+        try {
+            const user = await User.findById(userId);
+            if (!user) {
+                code = 404;
+                message = "User not found";
+                logger.info(message);
+                return { data: message, http: code };
+            }
+            const piIndex = user.raspberry_pis.findIndex((pi) => pi.raspID === piId);
+            if (piIndex === -1) {
+                code = 404;
+                message = "PI is not linked to the user";
+                logger.info(message);
+                return { data: message, http: code };
+            }
+            user.raspberry_pis.splice(piIndex, 1);
+            const updatedUser = await user.save();
+            code = 200;
+            message = { mess: "PI successfully removed from the user", data: updatedUser };
+            logger.info(message);
+        } catch (error) {
+            message = "Something went wrong: " + error;
+            logger.error(message);
+            code = 500;
+        }
+        return { data: message, http: code };
+    }    
 }
