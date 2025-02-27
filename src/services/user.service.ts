@@ -73,9 +73,17 @@ export class UserService {
     public static async deleteUser(id: string) {
         let code: number;
         let message: string;
-
+    
         try {
-            const res = await User.findByIdAndDelete(id);
+            const user = await User.findById(id);
+    
+            if (!user) {
+                code = 404;
+                message = "User not found";
+                logger.info(message);
+                return { data: message, http: code };
+            }
+            await User.findByIdAndDelete(id);
             code = 204;
             message = "The user has been deleted";
             logger.info(message);
@@ -84,7 +92,7 @@ export class UserService {
             logger.error(message);
             code = 400;
         }
-
+    
         return { data: message, http: code };
     }
 
