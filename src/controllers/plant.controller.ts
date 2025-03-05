@@ -5,7 +5,7 @@ import { PlantService } from "../services/plant.service";
 
 export class PlantController {
 
-    public static async getPlant(req: Request, res: Response): Promise<void> {    
+    public async getPlant(req: Request, res: Response): Promise<void> {    
         try {
             const id = req.params.id;
             const plant = await PlantService.getPlant(id);
@@ -22,7 +22,7 @@ export class PlantController {
         }
     }
 
-    public static async getAllPlants(req: Request, res: Response): Promise<void> {
+    public async getAllPlants(req: Request, res: Response): Promise<void> {
         try {
             const plants = await PlantService.getAllPlants();
             if (plants.length > 0) {
@@ -38,7 +38,7 @@ export class PlantController {
         }
     }
 
-    public static async postPlant(req: Request, res: Response): Promise<void> {
+    public async postPlant(req: Request, res: Response): Promise<void> {
         try {
             const newPlantData: IPlant = req.body;
             newPlantData.captorID= newPlantData.captorID.valueOf()
@@ -51,7 +51,7 @@ export class PlantController {
         }
     }
 
-    public static async updatePlant(req: Request, res: Response): Promise<void> {
+    public async updatePlant(req: Request, res: Response): Promise<void> {
         try {
             const id = req.params.id;
             const updateData: Partial<IPlant> = req.body;
@@ -70,7 +70,7 @@ export class PlantController {
         }
     }
     
-    public static async deletePlant(req: Request, res: Response): Promise<void> {
+    public async deletePlant(req: Request, res: Response): Promise<void> {
         try {
             const id = req.params.id;
             const deletedPlant = await PlantService.deletePlant(id);
@@ -87,7 +87,7 @@ export class PlantController {
         }
     }
 
-    public static async getPlantsByUser(req: Request, res: Response): Promise<void> {
+    public async getPlantsByUser(req: Request, res: Response): Promise<void> {
         try {
             const userId = req.body.user.id;
             const plants = await PlantService.getPlantsByUserID(userId);
@@ -104,7 +104,7 @@ export class PlantController {
         }
     }
 
-    public static async getCaptorsByUser(req: Request, res: Response): Promise<void> {
+    public async getCaptorsByUser(req: Request, res: Response): Promise<void> {
         try {
             const userId = req.body.user.id;
             const captors = await PlantService.getCaptorsByUserID(userId);
@@ -122,7 +122,7 @@ export class PlantController {
         }
     }
     
-    public static async getCaptorsInfoByUser(req: Request, res: Response): Promise<void> {
+    public async getCaptorsInfoByUser(req: Request, res: Response): Promise<void> {
         try {
             const userId = req.body.user.id;
             const captors = await PlantService.getCaptorsInfoByUserID(userId);

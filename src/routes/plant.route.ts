@@ -5,15 +5,16 @@ import { adminRole, allRole } from '../utils/role.util';
 import { roleMiddleware } from '../middlewares/role.middleware';
 
 const plantRoutes = Router();
+const plantController = new PlantController();
 
-plantRoutes.get('/user', verifyToken, PlantController.getPlantsByUser);
-plantRoutes.get('/captor',verifyToken, PlantController.getCaptorsByUser);
-plantRoutes.get('/captorInfo',verifyToken, PlantController.getCaptorsInfoByUser);
-plantRoutes.get('/:id',verifyToken, PlantController.getPlant);
-plantRoutes.get('/',verifyToken,roleMiddleware(adminRole), PlantController.getAllPlants);
-plantRoutes.post('/',verifyToken, PlantController.postPlant);
-plantRoutes.put('/:id',verifyToken, PlantController.updatePlant);
-plantRoutes.delete('/:id',verifyToken, PlantController.deletePlant);
+plantRoutes.get('/user', verifyToken, plantController.getPlantsByUser);
+plantRoutes.get('/captor',verifyToken, plantController.getCaptorsByUser);
+plantRoutes.get('/captorInfo',verifyToken, plantController.getCaptorsInfoByUser);
+plantRoutes.get('/:id',verifyToken, plantController.getPlant);
+plantRoutes.get('/',verifyToken,roleMiddleware(adminRole), plantController.getAllPlants);
+plantRoutes.post('/',verifyToken, plantController.postPlant);
+plantRoutes.put('/:id',verifyToken, plantController.updatePlant);
+plantRoutes.delete('/:id',verifyToken, plantController.deletePlant);
 
 
 export default plantRoutes;
