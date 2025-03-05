@@ -9,7 +9,7 @@ import plantRoutes from './routes/plant.route';
 
 const app = express();
 const corsOptions = {
-    origin: ['https://gardenizefe.onrender.com/',],
+    origin: ['https://gardenizefe.onrender.com',],
 }
 
 app.use(cors(corsOptions));
